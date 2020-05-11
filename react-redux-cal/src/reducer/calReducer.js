@@ -1,4 +1,6 @@
-const initialState = {};
+const initialState = {
+    initNumb: 0
+};
 
 const calReducer = (state = initialState, action) => {
     return state;

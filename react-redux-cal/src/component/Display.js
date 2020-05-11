@@ -1,9 +1,13 @@
 import React from "react";
 
-const Display = () => {
+const Display = props => {
     return (
         <div>
-            display pannel
+            <div id="display" className="display">
+                <p>'what you've typed'</p>
+                <p className="display-main">{props.initNumb}</p>
+            </div>
+            {/* <div>Cal history</div> */}
         </div>
     )
 }
