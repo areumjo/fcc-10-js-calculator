@@ -21,6 +21,9 @@
   color: #FF9F0D;
   text-align: end;
   margin: 0 auto;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
 }  
 
 .display p {
@@ -57,6 +60,7 @@
 .num-zero {
   width: 152px;
   border: 1px solid #323232;
+  border-bottom-left-radius: 10px;
 }
 
 .num-operator {

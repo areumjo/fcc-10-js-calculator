@@ -5,6 +5,7 @@ import Numbers from './component/Numbers';
 import Operators from './component/Operators';
 
 import { connect } from 'react-redux';
+import { doCalculation } from './action/calAction';
 
 function App(props) {
   // console.log(props) // props from `mapStateToProps`
@@ -30,4 +31,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    doCalculation: cal => dispatch(doCalculation(cal))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
