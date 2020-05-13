@@ -1,5 +1,6 @@
 const initialState = {
-    initNumb: 0
+    initNumb: 0,
+    currentCal: null,
 };
 
 const calReducer = (state = initialState, action) => {
