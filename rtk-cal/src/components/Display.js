@@ -5,7 +5,7 @@ const Display = props => {
         <div>
             <div id="display" className="display">
                 <p>{props.displayValue}</p>
-                <p className="display-main">{props.displayValue}</p>
+                <p className="display-main">{props.clickedValue}</p>
             </div>
             {/* <div>Cal history</div> */}
         </div>
