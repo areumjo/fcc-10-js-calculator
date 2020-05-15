@@ -1,0 +1,61 @@
+.App {
+  text-align: center;
+}
+
+.display {
+  background-color: #323232;
+  height: 120px;
+  width: 308px;
+  font-size: 25px;
+  color: #FF9F0D;
+  text-align: end;
+  margin: 0 auto;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+}  
+
+.display p {
+  margin: 0 20px;
+}
+
+.display-main {
+  font-size: 65px;
+  color: white;
+}
+
+.btn-pannel {
+  display: flex;
+  width: 308px;
+  margin: 0 auto;
+}
+
+.num-group {
+  display:flex;
+  flex-wrap: wrap;
+  width: 231px;
+}
+
+.num-btn {
+  width: 75px;
+  height: 65px;
+  background-color: #656565;
+  color: white;
+  border: 1px solid #323232;
+  font-size: 25px;
+  line-height: 65px;
+}
+
+.num-zero {
+  width: 152px;
+  border: 1px solid #323232;
+  border-bottom-left-radius: 10px;
+}
+
+.num-operator {
+  background-color: #464646;
+}
+
+.orange-operator {
+  background-color: #FF9F0D;
+}
