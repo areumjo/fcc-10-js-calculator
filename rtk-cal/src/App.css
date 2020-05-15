@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.title {
+  color: rgb(112, 76, 182);
+  padding: 1em;
+}
+
 .display {
   background-color: #323232;
   height: 120px;
@@ -16,6 +21,7 @@
 }  
 
 .display p {
+  padding-top: 5px;
   margin: 0 20px;
 }
 

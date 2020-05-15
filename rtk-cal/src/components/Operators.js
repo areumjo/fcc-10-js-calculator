@@ -9,10 +9,10 @@ const Operators = props => {
         <div className="operator-group">
             <div 
                 className="num-btn orange-operator"
-                onClick={() => dispatch(operate('÷'))}>÷</div>
+                onClick={() => dispatch(operate('/'))}>÷</div>
             <div 
                 className="num-btn orange-operator"
-                onClick={() => dispatch(operate('x'))}>x</div>
+                onClick={() => dispatch(operate('*'))}>x</div>
             <div 
                 className="num-btn orange-operator"
                 onClick={() => dispatch(operate('-'))}>-</div>

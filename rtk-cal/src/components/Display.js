@@ -4,7 +4,7 @@ const Display = props => {
     return (
         <div>
             <div id="display" className="display">
-                <p>'what you've typed'</p>
+                <p>{props.displayValue}</p>
                 <p className="display-main">{props.displayValue}</p>
             </div>
             {/* <div>Cal history</div> */}
