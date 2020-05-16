@@ -30,14 +30,112 @@ export const loadState = () => {
         return undefined;
     }
 }
+```
 
+### Redux Toolkit with create-react-app
+- `immer` library : allow us to mutate state in Redux store
+    1. `mutating` state directly only works because of immer, but you are acutally NOT mutating the sttate
+    2. need to ensure that you either mutate the state argument or return a new state, but not both!
+    3. don't try to apply the `mutate` logic to a state that is a `primitive value`
+
+- `createSlice()` : automatically generate `action` and `type` (captial constants) and doesn't have to like `switch`-`case&default` conditional statement  
+    - `switch` is the place you would use spread operator not to mutate state
+- `configureStore()` : replace `createStore()` in tranditional Redux
+- default middleware : there is already `redux-thunk` installed so can just use thunk middleware
+- `redux-devtools-extension`
+
+- Install : template comes with a counter example in `features` directory
+```
+npm install @reduxjs/toolkit react-redux
+npx create-react-app your-app --template redux
+```
+```js
+import  { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+const todosSlice = createSlice({
+    name: 'todos',
+    initialState: todosInitialState,
+    reducers: {
+        editTodo: (state, action) => {
+            const todoToEdit = state.find(todo => todo.id === action.payload.id)
+            if (todoToEdit) {
+                todoToEdit.desc = action.payload.desc; // possible due to `immmer` can `mutate`!
+            }
+        },
+        removeTodo: (state, action) => {
+          const index = state.find(todo => todo.id === action.payload.id);
+          if (index) {
+              state.splice(index, 1);
+          }  
+        },
+        addTodo(state, action) {
+            const { id, desc } = action.payload;
+            state.push({ id, text, completed: false })
+        },
+        toggleTodo(state, action) {
+            const todo = state.find(todo => todo.id === action.payload)
+            if (todo) {
+                todo.completed = !todo.completed;
+            }
+        }
+    }
+})
+```
+
+- `prepare()` : prepare callback must return an object with a field called `payload` inside
+    - if you uses `createSlice`, it automatically calls `createAction` for you.
+    - if you need to customize the payload (like todo (random)id generating -- `uuid()`), pass an object containing `reducer` and `prepare` fns to the `reducers object
+    ```js
+    let nextTodoId = 0
+    const todosSlice = createSlice({
+        name: 'todos',
+        initialState: [],
+        reducers: {
+            addTodo: {
+            reducer(state, action) {
+                const { id, text } = action.payload
+                state.push({ id, text, completed: false })
+            },
+            prepare(text) {
+                return { payload: { text, id: nextTodoId++ } }
+            }
+            }
+        }
+    }
+    ```
+
+- `extraReducers` : can reference other action types from other reducers
+    ```js
+    const counterSlice = createSlice({
+        name: 'counter',
+        initialState: 0,
+        reducers: {},
+        extraReducers: {
+            [todoSlice.actions.create]: state => state + 1
+        }
+    })
+    ```
+
+- `getDefaultMiddleware()` : when you want to use third party middleware
+    - by default, RTK will provide `thunk`
+    - for like `logger` need to use it with spread
+    ```js
+    const middleware = [...getDefaultMiddleware(), logger];
+    ```
+
+- Handle `async` using RTK : [Official Advaced Tutorial](https://redux-toolkit.js.org/tutorials/advanced-tutorial)
+    - within your slice, have an error key for the case your asyn call is rejected
+    - create reducers for both `success` state of th async call, and also the `rejected` state
+    - separately create your `thunk` function that either dispatches the success action or the failed action
 
 ## Features
 - It has basic calculation like MacOS version of calculation.
     - Operators : +, -, * %, +/-, C, =
     - Numbers : 0 - 10, . for decimal point
 - In addition to basic one number display, it will show everything users type in the app and follow `formula/expression logic`
-- There is a list of history data.
+
+- Calculation like `2/7` will print the answer with 4 decimal numbers (`0.2857`).
+    - used `+eval(state.value).toFixed(4)` : the plus sign at front will drop any extra zeros at the end.
 
 ## Webpack
 I am going to usd `Webpack` for this project.
@@ -49,163 +147,5 @@ ___webpack_require__(import React ...)
 // after npm build will creat `build` dir ==> 
 ```
 
-### webpack example with just js and html
-- Follow along this [tutorial](https://www.youtube.com/watch?v=MpGLUVbqoYQ)
-    - webpack example [react-color](https://github.com/Colt/react-colors) with React and a lot of dependencies 
-```bash
-# for webpack install
-npm init -y
-npm install --save-dev webpack webpack-cli
-npm start
-```
-```js
-// add it to package.json
-"scripts": {
-    "start": "webpack"
-}
-```
-
-- `npm.start` will build `dist/mainjs` : wrapping code with some webpack magic
-    - need to add it to bottom of html
-    - `<script src="./dist/main.js"></script>`
-- Import all the components to `index.j` with ES6
-
-- Configuration
-```js
-// package.json
-  "scripts": {
-    "start": "webpack  --config webpack.config.js"
-  },
-
-// webpack.config.js
-const path = require("path");
-module.exports = {
-    mode: "development",
-    entry: "./src/index.js",
-    output: {
-        filename: "main.js",
-        path: path.resolve(__dirname, "dist")
-    }
-}
-```
-
-- Loader : this enable webpack to grab all the different types of files other than js (above config is enough to do for js)
-    - for `css-loader`, `style-loader`, first install them
-    - css-loader : takes css and turn it into JS
-    - style-loader : takes the transformted-JS and inject it to DOM using `<style>`
-    ```js
-    // webpack.config.js
-    module: {
-        rules: [
-            {   test: /\.css$/,
-                use: ["style-loader", "css-loader"] // this order matters
-            }
-        ]
-    }
-    // import it to index.js
-    import "./main.css";
-    ```
-    
-    - scss-loader : install scss-loader
-    ```js
-    module: {
-        rules: [
-            {   test: /\.scss$/,
-                use: [
-                    "style-loader", // 3. Inject styles into DOM
-                    "css-loader", // 2. Turns css into commonjs
-                    "sass-loader" // 1. Turns sass into css
-                ]
-            }
-        ]
-    }
-    ```
-
-- Cache busting, `HtmlWebpackPlugin`
-    - `HtmlWebpackPlugin` : will automatically includes the correct script tag (new named) at the bottom of html 
-        - `npm install  --save-dev html-webpack-plugin`
-        - will edi in module.reports adding `plugins`
-    - will create new `index.html` (short-lined) from dist directory
-    - need to create `template.html`
-    ```js
-    // webpack.config.js
-    var HtmlWebpackPlugin = require("html-webpack-plugin");
-    module.exports = {
-        mode: "development",
-        entry: "./src/index.js",
-        output: {
-            filename: "main.[contentHash].js",
-            path: path.resolve(__dirname, "dist")
-        },
-        plugins: [
-            new HtmlWebpackPlugin({
-                template: "./src/template.html"
-            })
-    ```
-
-- For production/developemnt : changed to 1) `webpack.comon.js` and added 2) `webpack.dev.js`, 3) `webpack.prod.js`
-    ```js
-    // package.json
-    "scripts": {
-        "start": "webpack-dev-server  --config webpack.dev.js --open",
-        "build": "webpack --config webpack.prod.js"
-    },
-    ```
-    - dev config ==> `npm start`
-        - add `install npm webpack-dev-server` : dosen't have to re-starting (npm install) whenever you change code // doing everything in memory, don't actually make new directory
-    ```js
-    // webpack.dev.js
-    const path = require("path");
-    const common = require("./webpack.common");
-    const merge = require("webpack-merge");
-
-    module.exports = merge(common, {
-    mode: "development", // change this to production
-    output: {
-        filename: "main.js",
-        path: path.resolve(__dirname, "dist")
-    }}
-    ```
-
-    - production config ==> `npm run build` : build new `build` directory etc
-
-- `html-loader`
-    - `npm install --save-dev, html-loader`
-    - when you load any img file, import it to JS
-    - will need `file-loader` as well 
-    ```js
-    // webpack.common.js
-    {
-        test: /\.html$/,
-        use: ["html-loader"]
-    },
-    {
-        test: /\.(svg|png|jpg|gif)$/,
-        use: {
-          loader: "file-loader",
-          options: {
-                esModule: false,
-                name: "[name].[hash].[ext]",
-                outputPath: "imgs"
-            }
-        }
-    } // will create new imgs dir inside of dicrectory with hash name
-    ```
-
-- `clean-webpack-plugin` : clean out the `dist` dicrectory each time we build
-    - add it to `webpack.prod.js` for production
-    - so we only have one single js for bundling
-    ```js
-    const CleanWebpackPlugin = require("clean-webpack-plugin");
-    ...
-        plugins: [new CleanWebpackPlugin()]
-    ...
-    ```
-
-- vendor : can add any other 3rd party libraries ==> now will have `main` file and `vendor` file
-
-- `minicssextractplugin` : there will be a short flash meaning page first load everything without css and end of html it will get bootstrap styling ==> so add this plugin to `webpack.prod.js` (only for production, dev does not really need)
-    - css will be added to the html header, link
-    - optimize-css-assests-webpack-plugin : minify long css
-
-- Minify JS in production (`TerseJS`) and html in production as well
+## Screenshot
+![WIP: in middle of calculation]('./rtk-cal/src/WIP-cal.png')

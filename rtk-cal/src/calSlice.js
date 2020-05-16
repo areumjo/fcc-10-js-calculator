@@ -5,6 +5,7 @@ export const calSlice = createSlice({
     initialState: {
         value: 0,
         clicked: 0,
+        isEqualSigned: false,
     },
     reducers: {
         operate: (state, action) => {
@@ -13,19 +14,26 @@ export const calSlice = createSlice({
             state.clicked = '';
         },
         getNumber: (state, action) => {
-            if (state.value === 0) {
-                state.value = action.payload;
-                state.clicked = action.payload;
+            if (!state.isEqualSigned) {
+                if (state.value === 0) {
+                    state.value = action.payload;
+                    state.clicked = action.payload;
+                } else {
+                    state.value = state.value + action.payload;
+                    state.clicked = state.clicked + action.payload;
+                } 
             } else {
-                state.value = state.value + action.payload;
-                state.clicked = state.clicked + action.payload;
-            }   
+                state.value = action.payload;;
+                state.clicked = action.payload;;
+            }
+            
         },
         equalCal: (state) => {
             // console.log('equalCal state', state.value)
             let tempValue = +eval(state.value).toFixed(4);
             state.value = tempValue;
             state.clicked = tempValue;
+            state.isEqualSigned = !state.isEqualSigned;
         },
         ac: state => {
             state.value = 0;
