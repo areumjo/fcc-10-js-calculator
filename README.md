@@ -146,6 +146,3 @@ I am going to usd `Webpack` for this project.
 ___webpack_require__(import React ...)
 // after npm build will creat `build` dir ==> 
 ```
-
-## Screenshot
-![WIP: in middle of calculation]('./rtk-cal/src/WIP-cal.png')
